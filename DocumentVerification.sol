@@ -55,4 +55,9 @@ contract DocumentVerification is Ownable
             }
             return isVerifier;
     }
+    //Check all pending applications of document Verification
+    function getAllPendingApplications() public view returns(ApplicationInfo[] memory)
+    {
+        return applications;
+    }
  }
