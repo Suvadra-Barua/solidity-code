@@ -28,4 +28,19 @@ contract DocumentVerification is Ownable
     {
         verifiers.push(verifierAddress);
     }
+    //Anyone can apply for document verification
+    function documentRegistration(string memory _description, string memory _ipfsUrl) public 
+    {
+        ApplicationInfo memory newApplication=ApplicationInfo(
+            nextApplicationId,
+            msg.sender,
+            _description,
+            _ipfsUrl,
+            0,
+            0,
+            false);
+        applicationIdToApplicationInfo[nextApplicationId]=newApplication;
+        applications.push(newApplication);
+        nextApplicationId++;
+    }
  }
