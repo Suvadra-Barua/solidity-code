@@ -18,4 +18,14 @@ contract DocumentVerification is Ownable
     }
     mapping(uint=>ApplicationInfo) applicationIdToApplicationInfo;
     ApplicationInfo[] Applications;
+    
+    constructor()
+    {
+        transferOwnership(msg.sender);
+    }
+    //onlyowner can add verifiers
+    function addVerifiers(address verifierAddress) public onlyOwner 
+    {
+        verifiers.push(verifierAddress);
+    }
  }
