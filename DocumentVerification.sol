@@ -43,4 +43,16 @@ contract DocumentVerification is Ownable
         applications.push(newApplication);
         nextApplicationId++;
     }
+    //Function to check if an address is a verifiers
+    function checkIfVerifiers(address addressToCheck) public view returns(bool) {
+        bool isVerifier;
+            for(uint i=0;i<verifiers.length;i++)
+            {
+                if(verifiers[i]==addressToCheck)
+                {
+                    isVerifier=true;
+                }
+            }
+            return isVerifier;
+    }
  }
