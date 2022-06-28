@@ -5,6 +5,8 @@ import "@openzeppelin/contracts@4.5.0/access/Ownable.sol";
 
 contract DocumentVerification is Ownable
 {
+    contract DocumentVerification is Ownable
+{
     address[] verifiers;
     struct ApplicationInfo 
     { 
@@ -14,11 +16,13 @@ contract DocumentVerification is Ownable
         string ipfsUrl;
         uint totalYesVote;
         uint totalNoVote;
-        bool applicationStatus;
+        //applicationStatus=0(onGoingVote),1(voting finished/successful),2(voting finished and unsuccessful)
+        uint8 applicationStatus;
     }
     mapping(uint=>ApplicationInfo) applicationIdToApplicationInfo;
-    ApplicationInfo[] Applications;
+    ApplicationInfo[] applications;
     uint nextApplicationId;
+    uint[] allApprovedApplicationId;
     
     constructor()
     {
