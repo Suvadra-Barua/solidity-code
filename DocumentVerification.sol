@@ -61,4 +61,32 @@ contract DocumentVerification is Ownable
     {
         return applications;
     }
+    
+    function executeApplicationSuccessful(uint applicationId) private
+    {
+    }
+    function executeApplicationUnsuccessful(uint applicationId) private
+    {
+    }
+    //Verifiers can vote on an application
+    //voteverdict=1(Yes),2(No)
+    function vote(uint applicationId, uint voteVerdict) public 
+    {
+        require(checkIfVerifiers(msg.sender),"Only verifiers are allowed to vote");
+        require(voteVerdict==1||voteVerdict==2,"Wrong vote verdict");
+        if(voteVerdict==1){
+                applicationIdToApplicationInfo[applicationId].yesVote++;
+                if(applicationIdToApplicationInfo[applicationId].yesVote>=verifiers.length/2)
+                {
+                    executeApplicationSuccessful(applicationId);
+                }
+        }
+        else{
+            applicationIdToApplicationInfo[applicationId].noVote++;
+            if(applicationIdToApplicationInfo[applicationId].noVote>=verifiers.length/2)
+                {
+                    executeApplicationUnsuccessful(applicationId);
+                }
+        }
+    }
  }
