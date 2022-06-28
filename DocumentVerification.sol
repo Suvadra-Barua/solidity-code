@@ -18,6 +18,7 @@ contract DocumentVerification is Ownable
     }
     mapping(uint=>ApplicationInfo) applicationIdToApplicationInfo;
     ApplicationInfo[] Applications;
+    uint nextApplicationId;
     
     constructor()
     {
