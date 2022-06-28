@@ -2,10 +2,10 @@
 
 pragma solidity 0.8.7;
 import "@openzeppelin/contracts@4.5.0/access/Ownable.sol";
+// A platform to make different platform to verify document
+//question will arise 
 
 contract DocumentVerification is Ownable
-{
-    contract DocumentVerification is Ownable
 {
     address[] verifiers;
     struct ApplicationInfo 
@@ -23,7 +23,6 @@ contract DocumentVerification is Ownable
     ApplicationInfo[] applications;
     uint nextApplicationId;
     uint[] allApprovedApplicationId;
-    
     constructor()
     {
         transferOwnership(msg.sender);
@@ -43,7 +42,7 @@ contract DocumentVerification is Ownable
             _ipfsUrl,
             0,
             0,
-            false);
+            0);
         applicationIdToApplicationInfo[nextApplicationId]=newApplication;
         applications.push(newApplication);
         nextApplicationId++;
@@ -65,32 +64,65 @@ contract DocumentVerification is Ownable
     {
         return applications;
     }
-    
     function executeApplicationSuccessful(uint applicationId) private
     {
+        allApprovedApplicationId.push(applicationId);
+        applicationIdToApplicationInfo[applicationId].applicationStatus=1;
+        uint deleteIndex;
+        for(uint i=0;i<applications.length;i++)
+        {
+            if(applications[i].applicationId==applicationId)
+            {
+                deleteIndex=i;
+                break;
+            }
+        }
+        for(uint i=deleteIndex;i<applications.length-1;i++)
+        {
+            applications[i]=applications[i+1];
+        }
+        applications.pop();
     }
     function executeApplicationUnsuccessful(uint applicationId) private
     {
+        applicationIdToApplicationInfo[applicationId].applicationStatus=2;
+        uint deleteIndex;
+        for(uint i=0;i<applications.length;i++)
+        {
+            if(applications[i].applicationId==applicationId)
+            {
+                deleteIndex=i;
+                break;
+            }
+        }
+        for(uint i=deleteIndex;i<applications.length-1;i++)
+        {
+            applications[i]=applications[i+1];
+        }
+        applications.pop();
     }
     //Verifiers can vote on an application
     //voteverdict=1(Yes),2(No)
     function vote(uint applicationId, uint voteVerdict) public 
     {
+        require(applicationIdToApplicationInfo[applicationId].applicationStatus==0,"Voting closed");
         require(checkIfVerifiers(msg.sender),"Only verifiers are allowed to vote");
         require(voteVerdict==1||voteVerdict==2,"Wrong vote verdict");
         if(voteVerdict==1){
-                applicationIdToApplicationInfo[applicationId].yesVote++;
-                if(applicationIdToApplicationInfo[applicationId].yesVote>=verifiers.length/2)
+                applicationIdToApplicationInfo[applicationId].totalYesVote++;
+                if(applicationIdToApplicationInfo[applicationId].totalYesVote>=verifiers.length/2)
                 {
                     executeApplicationSuccessful(applicationId);
                 }
         }
         else{
-            applicationIdToApplicationInfo[applicationId].noVote++;
-            if(applicationIdToApplicationInfo[applicationId].noVote>=verifiers.length/2)
+            applicationIdToApplicationInfo[applicationId].totalNoVote++;
+            if(applicationIdToApplicationInfo[applicationId].totalNoVote>=verifiers.length/2)
                 {
                     executeApplicationUnsuccessful(applicationId);
                 }
         }
     }
- }
+
+    
+}
